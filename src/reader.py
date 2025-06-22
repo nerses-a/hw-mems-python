@@ -2,11 +2,17 @@
 import numpy as np
 
 def read_first_three_columns(filename):
-    times = []
-    rates = []
-    gyros = []
+    """
+    Считывает файл «МК.dat» с тремя столбцами:
+      time (с), rate (°/с), gyro output (В)
 
-    with open(filename, 'r') as f:
+    Возвращает:
+      times (np.ndarray) — время, 
+      omega (np.ndarray) — входная угловая скорость,
+      U (np.ndarray)     — выход гироскопа (В).
+    """
+    times, omega, U = [], [], []
+    with open(filename, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip()
             if not line or line.startswith('#'):
@@ -16,12 +22,12 @@ def read_first_three_columns(filename):
                 continue
             try:
                 t = float(parts[0])
-                rate = float(parts[1])
-                gyr = float(parts[2])
+                w = float(parts[1])
+                v = float(parts[2])
             except ValueError:
                 continue
             times.append(t)
-            rates.append(rate)
-            gyros.append(gyr)
+            omega.append(w)
+            U.append(v)
+    return np.array(times), np.array(omega), np.array(U)
 
-    return np.array(times), np.array(rates), np.array(gyros)
